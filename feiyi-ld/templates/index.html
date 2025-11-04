@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}非遗之光 - 传承中华文化瑰宝{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #2c1810 0%, #4a2c1a 50%, #2c1810 100%);
+        color: #f5f1e8;
+        padding: 120px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23f5f1e8" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23f5f1e8" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23f5f1e8" opacity="0.05"/><circle cx="10" cy="60" r="0.5" fill="%23f5f1e8" opacity="0.05"/><circle cx="90" cy="40" r="0.5" fill="%23f5f1e8" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+        letter-spacing: 0.2em;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        font-family: 'STKaiti', 'KaiTi', serif;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        color: #d4af37;
+        font-weight: 300;
+        letter-spacing: 0.1em;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 3rem;
+        opacity: 0.9;
+    }
+    
+    .hero-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 0;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.05em;
+    }
+    
+    .btn-primary {
+        background: #d4af37;
+        color: #2c1810;
+        border: 2px solid #d4af37;
+    }
+    
+    .btn-primary:hover {
+        background: transparent;
+        color: #d4af37;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    
+    .btn-secondary {
+        background: transparent;
+        color: #f5f1e8;
+        border: 2px solid #f5f1e8;
+    }
+    
+    .btn-secondary:hover {
+        background: #f5f1e8;
+        color: #2c1810;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 241, 232, 0.3);
+    }
+    
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+    }
+    
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #D2691E, #CD853F, #DEB887);
+    }
+    
+    .category-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        border-color: #D2691E;
+    }
+    
+    .category-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #D2691E;
+    }
+    
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .category-description {
+        color: #7f8c8d;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .category-link {
+        color: #D2691E;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .category-link:hover {
+        color: #8B4513;
+    }
+    
+    .features-section {
+        margin: 60px 0;
+        text-align: center;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #D2691E, #CD853F);
+        border-radius: 2px;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .feature-card {
+        background: white;
+        padding: 40px 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #D2691E;
+        margin-bottom: 20px;
+    }
+    
+    .feature-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .feature-description {
+        color: #7f8c8d;
+        line-height: 1.6;
+    }
+    
+    .ai-chat-preview {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 50px;
+        border-radius: 25px;
+        text-align: center;
+        margin: 50px 0;
+    }
+    
+    .ai-chat-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .ai-chat-description {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .categories-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-section {
+            margin: -40px -15px 40px -15px;
+            padding: 60px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1 class="hero-title">中华非物质文化遗产</h1>
+    <p class="hero-subtitle">传承千年文化，守护民族瑰宝。通过现代科技，让非遗文化走进千家万户，让传统智慧在新时代绽放光彩。</p>
+    <div class="hero-buttons">
+        <a href="#categories" class="btn btn-primary">探索非遗</a>
+        <a href="/ai-chat" class="btn btn-secondary">AI智能问答</a>
+    </div>
+</div>
+
+<section class="features-section">
+    <h2 class="section-title">平台特色</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🏛️</div>
+            <h3 class="feature-title">全面分类</h3>
+            <p class="feature-description">涵盖民间文学、传统音乐、舞蹈、戏剧等十大类别，系统性展示中华非遗全貌</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3 class="feature-title">AI智能问答</h3>
+            <p class="feature-description">接入华为云AI大模型，提供专业的非遗知识问答服务</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3 class="feature-title">知识库丰富</h3>
+            <p class="feature-description">汇聚海量非遗知识，从历史渊源到传承现状，应有尽有</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3 class="feature-title">传统美学</h3>
+            <p class="feature-description">界面设计融入传统文化元素，营造浓厚的文化氛围</p>
+        </div>
+    </div>
+</section>
+
+<section id="categories">
+    <h2 class="section-title">非遗十大类别</h2>
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            <div class="category-icon">
+                {% if category.id == 1 %}📖
+                {% elif category.id == 2 %}🎵
+                {% elif category.id == 3 %}💃
+                {% elif category.id == 4 %}🎭
+                {% elif category.id == 5 %}🎤
+                {% elif category.id == 6 %}🥋
+                {% elif category.id == 7 %}🎨
+                {% elif category.id == 8 %}⚒️
+                {% elif category.id == 9 %}💊
+                {% else %}🏮
+                {% endif %}
+            </div>
+            <h3 class="category-title">{{ category.name }}</h3>
+            <p class="category-description">{{ category.description }}</p>
+            <a href="/category/{{ category.id }}" class="category-link">了解更多 →</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="ai-chat-preview">
+    <h2 class="ai-chat-title">AI智能问答助手</h2>
+    <p class="ai-chat-description">有任何关于非遗的问题？我们的AI助手随时为您解答，让非遗知识触手可及。</p>
+    <a href="/ai-chat" class="btn btn-primary">开始对话</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // 添加滚动动画效果
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // 观察所有卡片元素
+    document.querySelectorAll('.category-card, .feature-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+</script>
+{% endblock %}

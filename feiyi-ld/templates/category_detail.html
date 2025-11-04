@@ -1,0 +1,727 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} - 中华非物质文化遗产{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        background: linear-gradient(135deg, rgba(210, 105, 30, 0.1) 0%, rgba(205, 133, 63, 0.1) 100%);
+        padding: 60px 0;
+        text-align: center;
+        border-radius: 20px;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23D2691E" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23CD853F" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23DEB887" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="%23D2691E" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="%23CD853F" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+    }
+    
+    .category-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        display: block;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .category-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .category-description {
+        font-size: 1.3rem;
+        color: #7f8c8d;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .category-stats {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        margin: 40px 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #D2691E;
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        margin-top: 8px;
+    }
+    
+    .filters-section {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        margin-bottom: 40px;
+    }
+    
+    .filters-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    
+    .filters-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .filter-label {
+        font-weight: 600;
+        color: #2c3e50;
+        white-space: nowrap;
+    }
+    
+    .filter-input {
+        padding: 12px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        min-width: 200px;
+    }
+    
+    .filter-input:focus {
+        outline: none;
+        border-color: #D2691E;
+    }
+    
+    .filter-select {
+        padding: 12px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        font-size: 1rem;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        min-width: 150px;
+    }
+    
+    .filter-select:focus {
+        outline: none;
+        border-color: #D2691E;
+    }
+    
+    .filter-button {
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(210, 105, 30, 0.4);
+    }
+    
+    .items-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .item-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .item-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #D2691E, #CD853F);
+        transition: height 0.3s ease;
+    }
+    
+    .item-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        border-color: #D2691E;
+    }
+    
+    .item-card:hover::before {
+        height: 6px;
+    }
+    
+    .item-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        transition: color 0.3s ease;
+    }
+    
+    .item-card:hover .item-title {
+        color: #D2691E;
+    }
+    
+    .item-description {
+        color: #7f8c8d;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .item-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px 0;
+        border-top: 1px solid #ecf0f1;
+    }
+    
+    .item-location {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #7f8c8d;
+        font-size: 0.95rem;
+    }
+    
+    .item-level {
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .level-national {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    
+    .level-provincial {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+    }
+    
+    .level-municipal {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+    }
+    
+    .item-actions {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .action-button {
+        flex: 1;
+        padding: 12px 20px;
+        border: 2px solid #D2691E;
+        border-radius: 25px;
+        background: transparent;
+        color: #D2691E;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+        font-size: 0.95rem;
+    }
+    
+    .action-button:hover {
+        background: #D2691E;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(210, 105, 30, 0.4);
+    }
+    
+    .action-button.primary {
+        background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
+        color: white;
+        border-color: transparent;
+    }
+    
+    .action-button.primary:hover {
+        background: linear-gradient(135deg, #CD853F 0%, #D2691E 100%);
+        border-color: transparent;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin: 50px 0;
+    }
+    
+    .pagination-button {
+        padding: 12px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        background: white;
+        color: #7f8c8d;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .pagination-button:hover:not(.disabled) {
+        border-color: #D2691E;
+        color: #D2691E;
+    }
+    
+    .pagination-button.active {
+        background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
+        color: white;
+        border-color: transparent;
+    }
+    
+    .pagination-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .loading {
+        text-align: center;
+        padding: 60px;
+        color: #7f8c8d;
+    }
+    
+    .loading-spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #D2691E;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #7f8c8d;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+    
+    .empty-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+        .category-title {
+            font-size: 2.5rem;
+        }
+        
+        .category-stats {
+            gap: 30px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .filters-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .filter-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .filter-input, .filter-select {
+            min-width: auto;
+            width: 100%;
+        }
+        
+        .items-container {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .item-actions {
+            flex-direction: column;
+        }
+        
+        .pagination {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-header">
+    <div class="category-icon">
+        {% if category.id == 1 %}📖
+        {% elif category.id == 2 %}🎵
+        {% elif category.id == 3 %}💃
+        {% elif category.id == 4 %}🎭
+        {% elif category.id == 5 %}🎤
+        {% elif category.id == 6 %}🥋
+        {% elif category.id == 7 %}🎨
+        {% elif category.id == 8 %}⚒️
+        {% elif category.id == 9 %}💊
+        {% else %}🏮
+        {% endif %}
+    </div>
+    <h1 class="category-title">{{ category.name }}</h1>
+    <p class="category-description">{{ category.description }}</p>
+    
+    <div class="category-stats">
+        <div class="stat-item">
+            <span class="stat-number" id="totalItems">-</span>
+            <div class="stat-label">项目总数</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ category.id * 5 + 8 }}</span>
+            <div class="stat-label">传承人数</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ category.id * 2 + 3 }}</span>
+            <div class="stat-label">保护单位</div>
+        </div>
+    </div>
+</div>
+
+<div class="filters-section">
+    <h2 class="filters-title">🔍 筛选与搜索</h2>
+    <div class="filters-container">
+        <div class="filter-group">
+            <label class="filter-label">关键词:</label>
+            <input type="text" class="filter-input" id="keywordFilter" placeholder="输入项目名称或关键词...">
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">保护级别:</label>
+            <select class="filter-select" id="levelFilter">
+                <option value="">全部级别</option>
+                <option value="国家级">国家级</option>
+                <option value="省级">省级</option>
+                <option value="市级">市级</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label class="filter-label">地区:</label>
+            <input type="text" class="filter-input" id="locationFilter" placeholder="输入地区名称...">
+        </div>
+        
+        <button class="filter-button" onclick="applyFilters()">应用筛选</button>
+    </div>
+</div>
+
+<div id="itemsContainer">
+    <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>正在加载项目...</p>
+    </div>
+</div>
+
+<div id="pagination" class="pagination" style="display: none;"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentFilters = {};
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        loadItems();
+        
+        // 添加回车键搜索功能
+        document.getElementById('keywordFilter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+        
+        document.getElementById('locationFilter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    });
+    
+    function loadItems(page = 1) {
+        currentPage = page;
+        
+        // 构建查询参数
+        const params = new URLSearchParams({
+            category_id: {{ category.id }},
+            page: page,
+            per_page: 12
+        });
+        
+        // 添加筛选条件
+        Object.keys(currentFilters).forEach(key => {
+            if (currentFilters[key]) {
+                params.append(key, currentFilters[key]);
+            }
+        });
+        
+        // 显示加载状态
+        document.getElementById('itemsContainer').innerHTML = `
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>正在加载项目...</p>
+            </div>
+        `;
+        
+        fetch(`/api/items?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                displayItems(data.items);
+                updatePagination(data.page, data.pages, data.total);
+                updateStats(data.total);
+            })
+            .catch(error => {
+                console.error('Error loading items:', error);
+                document.getElementById('itemsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❌</div>
+                        <h3 class="empty-title">加载失败</h3>
+                        <p class="empty-description">无法加载项目数据，请稍后重试。</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function displayItems(items) {
+        const container = document.getElementById('itemsContainer');
+        
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h3 class="empty-title">暂无相关项目</h3>
+                    <p class="empty-description">当前筛选条件下没有找到相关的非遗项目，请尝试调整筛选条件。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const itemsHtml = items.map(item => `
+            <div class="item-card" onclick="location.href='/item/${item.id}'">
+                <h3 class="item-title">${item.name}</h3>
+                <p class="item-description">${item.description}</p>
+                
+                <div class="item-meta">
+                    <div class="item-location">
+                        <span>📍</span>
+                        <span>${item.origin_location || '未知地区'}</span>
+                    </div>
+                    <div class="item-level ${getLevelClass(item.protection_level)}">
+                        ${item.protection_level || '未分级'}
+                    </div>
+                </div>
+                
+                <div class="item-actions">
+                    <a href="/item/${item.id}" class="action-button primary" onclick="event.stopPropagation()">
+                        查看详情
+                    </a>
+                    <button class="action-button" onclick="event.stopPropagation(); askAI('${item.name}')">
+                        AI解读
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = `<div class="items-container">${itemsHtml}</div>`;
+        
+        // 添加滚动动画
+        addScrollAnimation();
+    }
+    
+    function getLevelClass(level) {
+        if (level && level.includes('国家')) return 'level-national';
+        if (level && level.includes('省')) return 'level-provincial';
+        if (level && level.includes('市')) return 'level-municipal';
+        return 'level-municipal';
+    }
+    
+    function updatePagination(page, pages, total) {
+        totalPages = pages;
+        const pagination = document.getElementById('pagination');
+        
+        if (pages <= 1) {
+            pagination.style.display = 'none';
+            return;
+        }
+        
+        pagination.style.display = 'flex';
+        
+        let paginationHtml = '';
+        
+        // 上一页按钮
+        paginationHtml += `
+            <button class="pagination-button ${page <= 1 ? 'disabled' : ''}" 
+                    onclick="loadItems(${page - 1})" 
+                    ${page <= 1 ? 'disabled' : ''}>
+                ← 上一页
+            </button>
+        `;
+        
+        // 页码按钮
+        const startPage = Math.max(1, page - 2);
+        const endPage = Math.min(pages, page + 2);
+        
+        if (startPage > 1) {
+            paginationHtml += `<button class="pagination-button" onclick="loadItems(1)">1</button>`;
+            if (startPage > 2) {
+                paginationHtml += `<span style="padding: 12px;">...</span>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `
+                <button class="pagination-button ${i === page ? 'active' : ''}" 
+                        onclick="loadItems(${i})">
+                    ${i}
+                </button>
+            `;
+        }
+        
+        if (endPage < pages) {
+            if (endPage < pages - 1) {
+                paginationHtml += `<span style="padding: 12px;">...</span>`;
+            }
+            paginationHtml += `<button class="pagination-button" onclick="loadItems(${pages})">${pages}</button>`;
+        }
+        
+        // 下一页按钮
+        paginationHtml += `
+            <button class="pagination-button ${page >= pages ? 'disabled' : ''}" 
+                    onclick="loadItems(${page + 1})" 
+                    ${page >= pages ? 'disabled' : ''}>
+                下一页 →
+            </button>
+        `;
+        
+        pagination.innerHTML = paginationHtml;
+    }
+    
+    function updateStats(total) {
+        document.getElementById('totalItems').textContent = total;
+    }
+    
+    function applyFilters() {
+        currentFilters = {
+            keyword: document.getElementById('keywordFilter').value.trim(),
+            protection_level: document.getElementById('levelFilter').value,
+            location: document.getElementById('locationFilter').value.trim()
+        };
+        
+        loadItems(1); // 重置到第一页
+    }
+    
+    function askAI(itemName) {
+        // 打开AI聊天页面并预填问题
+        const question = `请介绍一下${itemName}这个非物质文化遗产项目`;
+        const encodedQuestion = encodeURIComponent(question);
+        window.open(`/ai-chat?question=${encodedQuestion}`, '_blank');
+    }
+    
+    function addScrollAnimation() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.item-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+    }
+</script>
+{% endblock %}
